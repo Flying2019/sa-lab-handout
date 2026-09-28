@@ -54,18 +54,17 @@ git pull --no-rebase origin main
 
 由于 Lab 2 将会使用到 SMT Solver，如果你计划使用本项目的依赖，可以使用 `make smt-check` 检查 SMT 配置。该指令将会运行 JavaSMT 示例，具体用法见 [SMT 指南](docs/smt.md)。其余指令内容可以查看 [Makefile](handout/Makefile)。
 
-最终评测时将会使用 Docker 环境。构建 docker 指令的方式如下：
+Docker 测试在仓库根目录运行，本机只需 Python 3.8 或更高版本和 Docker：
 
 ```bash
-docker compose build
-docker compose run --rm lab ./run_build.sh
-# docker compose run --rm lab make smt-check
-# docker compose run --rm lab make a1
+python3 grader/grade_submission.py --submission handout --cases handout/tests --profile a1 --output results/a1
 ```
+
+脚本将项目和评测工具复制到临时目录，使用根目录的 `Dockerfile` 构建环境。Dockerfile 仅用于评测使用，提交前请确保代码经过 Docker 测试，以避免和助教机器环境不同导致的问题。
 
 ## 提交与运行接口
 
-你需要提交一个包含 handout 文件夹的压缩文件。handout 目录下应当至少包含 `Dockerfile`、`run_build.sh` 和 `run_test.sh`。
+你需要提交包含根目录 `Dockerfile` 和 `handout/` 的压缩文件。`handout/` 中必须保留 `run_build.sh` 和 `run_test.sh`。评测工具 grader/ 不要放入压缩文件。**建议非必要不更改 Dockerfile 配置**。
 
 评测时会先运行一次 `./run_build.sh`。构建成功后针对每个测试用例分别运行 `./run_test.sh <input.java> <output>`。下发的模板项目中，默认构建脚本执行 `make build`，测试脚本执行 `make test INPUT="<input.java>" OUTPUT="<output>"`。
 

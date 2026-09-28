@@ -6,6 +6,8 @@ __pycache__/
 .venv/
 /results/
 /grader/hidden/
+/handout/.env
+/handout/compose.override.yaml
 /handout/tests/a2/
 /handout/tests/a3/
 /handout/tests/a4/

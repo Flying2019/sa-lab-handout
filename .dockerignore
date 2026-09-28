@@ -1,0 +1,14 @@
+**/.git
+**/.work
+**/.gradle
+**/build
+**/__pycache__
+**/*.pyc
+**/.venv
+**/.env
+**/compose.override.yaml
+handout/tests
+grader/hidden
+gen
+docs
+results
