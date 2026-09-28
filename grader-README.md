@@ -5,7 +5,7 @@ grader/ 用于展示评测系统，最终评测脚本和 grader/ 下的评测脚
 例如，当你的文件夹名称为 handout 时，可以在主目录（grader/ 的上级目录）下运行以下指令测试 a1 的公开数据，并将结果存储在 results/a1 文件夹内。
 
 ```bash
-python grader/grade_submission.py --submission handout --cases handout/tests --profile a1 --output results/a1
+python3 grader/grade_submission.py --submission handout --cases handout/tests --profile a1 --output results/a1
 ```
 
 省略 `--profile` 参数将会默认使用 `--profile=all` 测试所有数据。省略 `--cases` 将会默认测试 `grader/hidden/` 下的隐藏测试。

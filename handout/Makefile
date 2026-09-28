@@ -1,4 +1,3 @@
-PYTHON ?= python
 JAVA ?= java
 JAVAC ?= javac
 PROFILE ?= all
@@ -10,8 +9,10 @@ INPUT ?=
 OUTPUT ?=
 
 ifeq ($(OS),Windows_NT)
+PYTHON ?= python
 GRADLE ?= gradlew.bat
 else
+PYTHON ?= python3
 GRADLE ?= ./gradlew
 endif
 

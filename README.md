@@ -48,7 +48,9 @@ git pull --no-rebase origin main
 
 ## 构建与测试
 
-在 `handout/` 目录运行 `make build` 或 `./run_build.sh` 将构建整个项目。运行 `make a1` 将测试 A1 实验的公开数据。你也可以
+本机运行需要 JDK 17 或更高版本、Python 3.8 或更高版本和 Make。Linux 默认使用 `python3`，Windows 默认使用 `python`；可通过 `make a1 PYTHON=/path/to/python3` 指定解释器。
+
+在 `handout/` 目录运行 `make build` 或 `./run_build.sh` 将构建整个项目。运行 `make a1` 将测试 A1 实验的公开数据。
 
 由于 Lab 2 将会使用到 SMT Solver，如果你计划使用本项目的依赖，可以使用 `make smt-check` 检查 SMT 配置。该指令将会运行 JavaSMT 示例，具体用法见 [SMT 指南](docs/smt.md)。其余指令内容可以查看 [Makefile](handout/Makefile)。
 
