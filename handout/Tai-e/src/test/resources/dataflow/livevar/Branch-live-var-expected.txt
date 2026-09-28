@@ -1,0 +1,12 @@
+-------------------- <Branch: int ifElse(int,int,int)> (live-var) --------------------
+[0@L-1] %ci0 = 0; [%ci0, k, m, n]
+[1@L5] if (n <= %ci0) goto 4; [k, m, n]
+[2@L6] %v6 = m + n; [%v6]
+[3@L6] return %v6; []
+[4@L8] %v7 = k + n; [%v7]
+[5@L8] return %v7; []
+
+-------------------- <Branch: void <init>()> (live-var) --------------------
+[0@L1] invokespecial this.<java.lang.Object: void <init>()>(); []
+[1@L1] return; []
+

@@ -1,0 +1,14 @@
+-------------------- <SimpleChar: void <init>()> (const-prop) --------------------
+[0@L1] invokespecial this.<java.lang.Object: void <init>()>(); {}
+[1@L1] return; {}
+
+-------------------- <SimpleChar: void constant()> (const-prop) --------------------
+[0@L6] return; {}
+
+-------------------- <SimpleChar: void propagation()> (const-prop) --------------------
+[0@L14] a = 97; {}
+[1@L17] return; {}
+
+-------------------- <SimpleChar: void undefined()> (const-prop) --------------------
+[0@L11] return; {}
+

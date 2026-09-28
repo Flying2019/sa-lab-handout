@@ -1,0 +1,13 @@
+Points-to sets of all variables
+[]:<A: void <init>()>/this -> [[]:NewObj{<Null: void main(java.lang.String[])>[0@L4] new A}]
+[]:<Null: void foo(A,A)>/a1 -> [[]:NewObj{<Null: void main(java.lang.String[])>[0@L4] new A}]
+[]:<Null: void main(java.lang.String[])>/a -> [[]:NewObj{<Null: void main(java.lang.String[])>[0@L4] new A}]
+[]:<Null: void main(java.lang.String[])>/args -> [[]:EntryPointObj{alloc=MethodParam{<Null: void main(java.lang.String[])>/0},type=java.lang.String[] in <Null: void main(java.lang.String[])>}]
+
+Points-to sets of all static fields
+
+Points-to sets of all instance fields
+
+Points-to sets of all array indexes
+[]:EntryPointObj{alloc=MethodParam{<Null: void main(java.lang.String[])>/0},type=java.lang.String[] in <Null: void main(java.lang.String[])>}[*] -> [[]:EntryPointObj{alloc=MethodParam{<Null: void main(java.lang.String[])>/0}[*],type=java.lang.String in <Null: void main(java.lang.String[])>}]
+

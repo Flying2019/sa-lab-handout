@@ -1,0 +1,23 @@
+-------------------- <A: void <init>()> (cg) --------------------
+[0@L22] invokespecial this.<java.lang.Object: void <init>()>(); [<java.lang.Object: void <init>()>]
+
+-------------------- <A: void foo()> (cg) --------------------
+
+-------------------- <B: void foo()> (cg) --------------------
+
+-------------------- <C: void foo()> (cg) --------------------
+
+-------------------- <E: void <init>()> (cg) --------------------
+[0@L42] invokespecial this.<java.lang.Object: void <init>()>(); [<java.lang.Object: void <init>()>]
+
+-------------------- <E: void foo()> (cg) --------------------
+
+-------------------- <E: void bar()> (cg) --------------------
+
+-------------------- <Interface2: void main(java.lang.String[])> (cg) --------------------
+[1@L14] invokespecial i.<A: void <init>()>(); [<A: void <init>()>]
+[2@L15] invokeinterface i.<I: void foo()>(); [<A: void foo()>, <B: void foo()>, <C: void foo()>]
+[4@L16] invokespecial ii.<E: void <init>()>(); [<E: void <init>()>]
+[5@L17] invokeinterface ii.<II: void foo()>(); [<E: void foo()>]
+[6@L18] invokeinterface ii.<II: void bar()>(); [<E: void bar()>]
+

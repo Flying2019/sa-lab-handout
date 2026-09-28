@@ -1,0 +1,5 @@
+-------------------- <UnreachableIfBranch: int branch()> (dead-code) --------------------
+[5@L10] z = 200;
+
+-------------------- <UnreachableIfBranch: void <init>()> (dead-code) --------------------
+

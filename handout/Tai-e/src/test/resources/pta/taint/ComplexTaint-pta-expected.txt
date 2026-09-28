@@ -1,0 +1,21 @@
+Points-to sets of all variables
+[]:<ComplexTaint: void main(java.lang.String[])>/%v11 -> [[]:MergedObj{<Merged java.lang.String>}]
+[]:<ComplexTaint: void main(java.lang.String[])>/%v7 -> [[]:MergedObj{<Merged java.lang.String>}]
+[]:<ComplexTaint: void main(java.lang.String[])>/args -> [[]:EntryPointObj{alloc=MethodParam{<ComplexTaint: void main(java.lang.String[])>/0},type=java.lang.String[] in <ComplexTaint: void main(java.lang.String[])>}]
+[]:<ComplexTaint: void main(java.lang.String[])>/s1 -> [[]:MergedObj{<Merged java.lang.String>}, []:TaintObj{alloc=<ComplexTaint: void main(java.lang.String[])>[2@L4] s1 = invokestatic SourceSink.source()/result,type=java.lang.String}]
+[]:<ComplexTaint: void main(java.lang.String[])>/s4 -> [[]:MergedObj{<Merged java.lang.String>}]
+[]:<ComplexTaint: void main(java.lang.String[])>/s5 -> [[]:MergedObj{<Merged java.lang.String>}, []:TaintObj{alloc=<ComplexTaint: void main(java.lang.String[])>[6@L12] s5 = invokestatic SourceSink.source()/result,type=java.lang.String}]
+[]:<SourceSink: java.lang.String source()>/%v0 -> [[]:MergedObj{<Merged java.lang.String>}]
+[]:<SourceSink: void sink(java.lang.String)>/s -> [[]:MergedObj{<Merged java.lang.String>}, []:TaintObj{alloc=<ComplexTaint: void main(java.lang.String[])>[2@L4] s1 = invokestatic SourceSink.source()/result,type=java.lang.String}, []:TaintObj{alloc=<ComplexTaint: void main(java.lang.String[])>[6@L12] s5 = invokestatic SourceSink.source()/result,type=java.lang.String}]
+
+Points-to sets of all static fields
+
+Points-to sets of all instance fields
+
+Points-to sets of all array indexes
+[]:EntryPointObj{alloc=MethodParam{<ComplexTaint: void main(java.lang.String[])>/0},type=java.lang.String[] in <ComplexTaint: void main(java.lang.String[])>}[*] -> [[]:EntryPointObj{alloc=MethodParam{<ComplexTaint: void main(java.lang.String[])>/0}[*],type=java.lang.String in <ComplexTaint: void main(java.lang.String[])>}]
+
+Detected 2 taint flow(s):
+TaintFlow{<ComplexTaint: void main(java.lang.String[])>[2@L4] s1 = invokestatic SourceSink.source()/result -> <ComplexTaint: void main(java.lang.String[])>[3@L7] invokestatic SourceSink.sink(s1)/0}
+TaintFlow{<ComplexTaint: void main(java.lang.String[])>[6@L12] s5 = invokestatic SourceSink.source()/result -> <ComplexTaint: void main(java.lang.String[])>[7@L14] invokestatic SourceSink.sink(s5)/0}
+

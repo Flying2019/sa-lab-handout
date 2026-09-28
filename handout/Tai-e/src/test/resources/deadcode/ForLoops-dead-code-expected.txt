@@ -1,0 +1,12 @@
+-------------------- <ForLoops: void <init>()> (dead-code) --------------------
+
+-------------------- <ForLoops: void dead1()> (dead-code) --------------------
+[3@L7] invokevirtual this.<ForLoops: void use(int)>(y);
+[4@L8] return;
+
+-------------------- <ForLoops: void dead2()> (dead-code) --------------------
+[5@L20] invokevirtual this.<ForLoops: void use(int)>(y);
+[6@L21] return;
+
+-------------------- <ForLoops: void use(int)> (dead-code) --------------------
+

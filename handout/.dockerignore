@@ -1,0 +1,7 @@
+.work/
+**/.gradle/
+**/build/
+**/__pycache__/
+**/.git/
+**/*.out
+.venv/

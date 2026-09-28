@@ -1,0 +1,169 @@
+/*
+ * Tai-e: A Static Analysis Framework for Java
+ *
+ * Copyright (C) 2022 Tian Tan <tiantan@nju.edu.cn>
+ * Copyright (C) 2022 Yue Li <yueli@nju.edu.cn>
+ *
+ * This file is part of Tai-e.
+ *
+ * Tai-e is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * Tai-e is distributed in the hope that it will be useful,but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
+ * Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Tai-e. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package pascal.taie.frontend.cache;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pascal.taie.World;
+import pascal.taie.WorldBuilder;
+import pascal.taie.config.Options;
+import pascal.taie.util.Monitor;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A {@link WorldBuilder} that caches the built World on disk,
+ * improving performance by loading from cache on subsequent runs.
+ * <p>
+ * The cache can be reused when {@link #getWorldCacheHash(Options)} produces
+ * the same hash value, which is computed based on program input related
+ * fields in {@link Options}. If any program input related fields change
+ * in {@link Options}, please update that method accordingly.
+ * <p>
+ * Defaults to the {@link #delegate} builder if the cache is unavailable.
+ */
+public class CachedWorldBuilder implements WorldBuilder {
+
+    private static final Logger logger = LoggerFactory.getLogger(CachedWorldBuilder.class);
+
+    private static final String CACHE_DIR = "cache";
+
+    /**
+     * The delegate {@link WorldBuilder} used to build the {@link World}
+     * when the cache is unavailable.
+     */
+    private final WorldBuilder delegate;
+
+    public CachedWorldBuilder(WorldBuilder delegate) {
+        this.delegate = delegate;
+        logger.info("The world cache mode is enabled.");
+    }
+
+    @Override
+    public void build(Options options) {
+        File worldCacheFile = getWorldCacheFile(options);
+        if (loadCache(options, worldCacheFile)) {
+            return;
+        }
+        runWorldBuilder(options);
+        saveCache(worldCacheFile);
+    }
+
+    private boolean loadCache(Options options, File worldCacheFile) {
+        if (!worldCacheFile.exists()) {
+            logger.info("World cache not found in {}", worldCacheFile);
+            return false;
+        }
+        logger.info("Loading the world cache from {}", worldCacheFile);
+        Monitor monitor = new Monitor("Load the world cache");
+        monitor.start();
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(
+                    new BufferedInputStream(new FileInputStream(worldCacheFile)));
+            World world = (World) ois.readObject();
+            World.set(world);
+            world.setOptions(options);
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to load world cache from {} due to {}",
+                    worldCacheFile, e);
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (Exception e) {
+                    logger.error("Failed to close input stream", e);
+                }
+            }
+            monitor.stop();
+            logger.info("{}", monitor);
+        }
+        return false;
+    }
+
+    private void runWorldBuilder(Options options) {
+        logger.info("Running the WorldBuilder ...");
+        Monitor monitor = new Monitor("Run the WorldBuilder");
+        monitor.start();
+        delegate.build(options);
+        monitor.stop();
+        logger.info("{}", monitor);
+    }
+
+    private void saveCache(File worldCacheFile) {
+        logger.info("Saving the world cache to {}", worldCacheFile);
+        Monitor monitor = new Monitor("Save the world cache");
+        monitor.start();
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new BufferedOutputStream(new FileOutputStream(worldCacheFile)))) {
+            oos.writeObject(World.get());
+        } catch (Exception e) {
+            logger.error("Failed to save world cache from {} due to {}",
+                    worldCacheFile, e);
+        } finally {
+            monitor.stop();
+            logger.info("{}", monitor);
+        }
+    }
+
+    public static File getWorldCacheFile(Options options) {
+        File cacheDir = new File(CACHE_DIR);
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
+        }
+        return new File(cacheDir,
+                "world-cache-" + getWorldCacheHash(options) + ".bin").getAbsoluteFile();
+    }
+
+    private static int getWorldCacheHash(Options options) {
+        int result = options.getMainClass() != null
+                ? options.getMainClass().hashCode() : 0;
+        result = 31 * result + (options.getInputClasses() != null
+                ? options.getInputClasses().hashCode() : 0);
+        result = 31 * result + options.getJavaVersion();
+        result = 31 * result + (options.isUseCurrentJRE() ? 1 : 0);
+        result = 31 * result + (options.getWorldBuilderClass() != null
+                ? options.getWorldBuilderClass().getName().hashCode() : 0);
+        // add the timestamp to the cache key calculation
+        List<String> paths = new ArrayList<>();
+        paths.addAll(options.getClassPath());
+        paths.addAll(options.getAppClassPath());
+        for (String path : paths) {
+            File file = new File(path);
+            if (file.exists()) {
+                result = 31 * result + (int) file.lastModified();
+            }
+        }
+        result = Math.abs(result);
+        return result;
+    }
+}

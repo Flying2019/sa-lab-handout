@@ -1,0 +1,25 @@
+-------------------- <BranchNAC: void <init>()> (const-prop) --------------------
+[0@L1] invokespecial this.<java.lang.Object: void <init>()>(); {}
+[1@L1] return; {}
+
+-------------------- <BranchNAC: void NAC1(boolean)> (const-prop) --------------------
+[0@L-1] %ci0 = 0; {b=NAC}
+[1@L5] if (b == %ci0) goto 4; {b=NAC}
+[2@L6] x = 10; {b=NAC, x=10}
+[3@L6] goto 5; {b=NAC, x=10}
+[4@L8] x = 20; {b=NAC, x=20}
+[5@L11] return; {b=NAC, x=NAC}
+
+-------------------- <BranchNAC: void nonDistributivity(boolean)> (const-prop) --------------------
+[0@L-1] %ci0 = 0; {b=NAC}
+[1@L-1] %ci2 = 2; {b=NAC}
+[2@L-1] %ci3 = 3; {b=NAC}
+[3@L16] if (b == %ci0) goto 7; {b=NAC}
+[4@L17] x = %ci2; {b=NAC, x=2}
+[5@L18] y = %ci3; {b=NAC, x=2, y=3}
+[6@L18] goto 9; {b=NAC, x=2, y=3}
+[7@L20] x = %ci3; {b=NAC, x=3}
+[8@L21] y = %ci2; {b=NAC, x=3, y=2}
+[9@L23] %v8 = x + y; {%v8=NAC, b=NAC, x=NAC, y=NAC}
+[10@L24] return; {%v8=NAC, b=NAC, x=NAC, y=NAC}
+

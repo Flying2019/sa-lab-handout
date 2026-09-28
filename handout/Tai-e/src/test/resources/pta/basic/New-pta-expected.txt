@@ -1,0 +1,17 @@
+Points-to sets of all variables
+[]:<A: void <init>()>/this -> [[]:NewObj{<New: void main(java.lang.String[])>[0@L4] new A}]
+[]:<B: void <init>()>/this -> [[]:NewObj{<New: void main(java.lang.String[])>[2@L5] new B}, []:NewObj{<New: void main(java.lang.String[])>[4@L6] new C}, []:NewObj{<New: void main(java.lang.String[])>[6@L7] new C}]
+[]:<C: void <init>()>/this -> [[]:NewObj{<New: void main(java.lang.String[])>[4@L6] new C}, []:NewObj{<New: void main(java.lang.String[])>[6@L7] new C}]
+[]:<New: void main(java.lang.String[])>/%v5 -> [[]:NewObj{<New: void main(java.lang.String[])>[0@L4] new A}]
+[]:<New: void main(java.lang.String[])>/%v6 -> [[]:NewObj{<New: void main(java.lang.String[])>[2@L5] new B}]
+[]:<New: void main(java.lang.String[])>/%v7 -> [[]:NewObj{<New: void main(java.lang.String[])>[4@L6] new C}]
+[]:<New: void main(java.lang.String[])>/%v8 -> [[]:NewObj{<New: void main(java.lang.String[])>[6@L7] new C}]
+[]:<New: void main(java.lang.String[])>/args -> [[]:EntryPointObj{alloc=MethodParam{<New: void main(java.lang.String[])>/0},type=java.lang.String[] in <New: void main(java.lang.String[])>}]
+
+Points-to sets of all static fields
+
+Points-to sets of all instance fields
+
+Points-to sets of all array indexes
+[]:EntryPointObj{alloc=MethodParam{<New: void main(java.lang.String[])>/0},type=java.lang.String[] in <New: void main(java.lang.String[])>}[*] -> [[]:EntryPointObj{alloc=MethodParam{<New: void main(java.lang.String[])>/0}[*],type=java.lang.String in <New: void main(java.lang.String[])>}]
+

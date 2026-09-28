@@ -1,0 +1,40 @@
+-------------------- <ConditionOp: void <init>()> (const-prop) --------------------
+[0@L1] invokespecial this.<java.lang.Object: void <init>()>(); {}
+[1@L1] return; {}
+
+-------------------- <ConditionOp: void booleanEqNeq()> (const-prop) --------------------
+[0@L-1] f = 0; {}
+[1@L-1] t = 1; {}
+[2@L11] if (t != f) goto 4; {}
+[3@L11] goto 4; {}
+[4@L12] if (t == f) goto 6; {}
+[5@L12] goto 6; {}
+[6@L13] return; {}
+
+-------------------- <ConditionOp: void intEqNeq()> (const-prop) --------------------
+[0@L-1] i0 = 0; {}
+[1@L-1] i1 = 1; {}
+[2@L5] if (i0 != i1) goto 4; {}
+[3@L5] goto 4; {}
+[4@L6] if (i0 == i1) goto 6; {}
+[5@L6] goto 6; {}
+[6@L7] return; {}
+
+-------------------- <ConditionOp: void intGeGt()> (const-prop) --------------------
+[0@L-1] i0 = 0; {}
+[1@L-1] i1 = 1; {}
+[2@L17] if (i0 < i1) goto 4; {}
+[3@L17] goto 4; {}
+[4@L18] if (i0 <= i1) goto 6; {}
+[5@L18] goto 6; {}
+[6@L19] return; {}
+
+-------------------- <ConditionOp: void intLeLt()> (const-prop) --------------------
+[0@L-1] i0 = 0; {}
+[1@L-1] i1 = 1; {}
+[2@L23] if (i0 > i1) goto 4; {}
+[3@L23] goto 4; {}
+[4@L24] if (i0 >= i1) goto 6; {}
+[5@L24] goto 6; {}
+[6@L25] return; {}
+

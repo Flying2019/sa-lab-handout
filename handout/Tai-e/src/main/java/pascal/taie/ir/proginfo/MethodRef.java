@@ -1,0 +1,254 @@
+/*
+ * Tai-e: A Static Analysis Framework for Java
+ *
+ * Copyright (C) 2022 Tian Tan <tiantan@nju.edu.cn>
+ * Copyright (C) 2022 Yue Li <yueli@nju.edu.cn>
+ *
+ * This file is part of Tai-e.
+ *
+ * Tai-e is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * Tai-e is distributed in the hope that it will be useful,but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
+ * Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Tai-e. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package pascal.taie.ir.proginfo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pascal.taie.World;
+import pascal.taie.language.classes.JClass;
+import pascal.taie.language.classes.JMethod;
+import pascal.taie.language.classes.StringReps;
+import pascal.taie.language.classes.Subsignature;
+import pascal.taie.language.type.Type;
+import pascal.taie.util.Hashes;
+import pascal.taie.util.collection.Sets;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import static pascal.taie.language.classes.ClassNames.METHOD_HANDLE;
+import static pascal.taie.language.classes.ClassNames.VAR_HANDLE;
+
+/**
+ * Represents method references in IR.
+ */
+public class MethodRef extends MemberRef {
+
+    private static final Logger logger = LoggerFactory.getLogger(MethodRef.class);
+
+    /**
+     * Records the MethodRef that fails to be resolved.
+     */
+    private static final Set<MethodRef> resolveFailures =
+            Sets.newConcurrentSet();
+
+    static {
+        World.registerResetCallback(resolveFailures::clear);
+    }
+
+    // Method names of polymorphic signature methods.
+    private static final Set<String> METHOD_HANDLE_METHODS = Set.of(
+            "invokeExact",
+            "invoke",
+            "invokeBasic",
+            "linkToVirtual",
+            "linkToStatic",
+            "linkToSpecial",
+            "linkToInterface"
+    );
+
+    private static final Set<String> VAR_HANDLE_METHODS = Set.of(
+            "get",
+            "set",
+            "getVolatile",
+            "setVolatile",
+            "getOpaque",
+            "setOpaque",
+            "getAcquire",
+            "setRelease",
+            "compareAndSet",
+            "compareAndExchange",
+            "compareAndExchangeAcquire",
+            "compareAndExchangeRelease",
+            "weakCompareAndSetPlain",
+            "weakCompareAndSet",
+            "weakCompareAndSetAcquire",
+            "weakCompareAndSetRelease",
+            "getAndSet",
+            "getAndSetAcquire",
+            "getAndSetRelease",
+            "getAndAdd",
+            "getAndAddAcquire",
+            "getAndAddRelease",
+            "getAndBitwiseOr",
+            "getAndBitwiseOrAcquire",
+            "getAndBitwiseOrRelease",
+            "getAndBitwiseAnd",
+            "getAndBitwiseAndAcquire",
+            "getAndBitwiseAndRelease",
+            "getAndBitwiseXor",
+            "getAndBitwiseXorAcquire",
+            "getAndBitwiseXorRelease"
+    );
+
+    private final List<Type> parameterTypes;
+
+    private final Type returnType;
+
+    private Subsignature subsignature;
+
+    /**
+     * Caches the resolved method for this reference to avoid redundant
+     * method resolution.
+     *
+     * @see #resolve()
+     * @see #resolveNullable()
+     */
+    @Nullable
+    private transient JMethod method;
+
+    private final boolean isDeclaredInInterface;
+
+    private transient int cachedHash = 0;
+
+    public static MethodRef get(
+            JClass declaringClass, String name,
+            List<Type> parameterTypes, Type returnType,
+            boolean isStatic, boolean isDeclaredInInterface) {
+        return new MethodRef(declaringClass, name, parameterTypes, returnType,
+                isStatic, isDeclaredInInterface);
+    }
+
+
+    public static MethodRef get(
+            JClass declaringClass, String name,
+            List<Type> parameterTypes, Type returnType,
+            boolean isStatic) {
+        return get(declaringClass, name, parameterTypes, returnType,
+                isStatic, declaringClass.isInterface());
+    }
+
+    private MethodRef(
+            JClass declaringClass, String name,
+            List<Type> parameterTypes, Type returnType,
+            boolean isStatic, boolean isDeclaredInInterface) {
+        super(declaringClass, name, isStatic);
+        this.parameterTypes = List.copyOf(parameterTypes);
+        this.returnType = returnType;
+        this.isDeclaredInInterface = isDeclaredInInterface;
+    }
+
+    public List<Type> getParameterTypes() {
+        return parameterTypes;
+    }
+
+    public Type getReturnType() {
+        return returnType;
+    }
+
+    /**
+     * @return the subsignature of the method reference.
+     */
+    public Subsignature getSubsignature() {
+        if (subsignature == null) {
+            subsignature = Subsignature.get(
+                    getName(), parameterTypes, returnType);
+        }
+        return subsignature;
+    }
+
+    /**
+     * @return true if this is a reference to polymorphic signature method,
+     * otherwise false.
+     * See JLS (11 Ed.), 15.12.3 for the definition of polymorphic signature method.
+     */
+    public boolean isPolymorphicSignature() {
+        if (METHOD_HANDLE.equals(getDeclaringClass().getName())) {
+            return METHOD_HANDLE_METHODS.contains(getName());
+        }
+        if (VAR_HANDLE.equals(getDeclaringClass().getName())) {
+            return VAR_HANDLE_METHODS.contains(getName());
+        }
+        return false;
+    }
+
+    public boolean isDeclaredInInterface() {
+        return isDeclaredInInterface;
+    }
+
+    @Override
+    public JMethod resolve() {
+        if (method == null) {
+            method = World.get().getClassHierarchy()
+                    .resolveMethod(this);
+            if (method == null) {
+                throw new MethodResolutionFailedException(
+                        "Cannot resolve " + this);
+            }
+        }
+        return method;
+    }
+
+    @Override
+    @Nullable
+    public JMethod resolveNullable() {
+        if (method == null) {
+            method = World.get().getClassHierarchy()
+                    .resolveMethod(this);
+            if (method == null && resolveFailures.add(this)) {
+                logger.debug("Failed to resolve {}", this);
+            }
+        }
+        return method;
+    }
+
+    @Override
+    public String toString() {
+        return StringReps.getMethodSignature(getDeclaringClass(), getName(),
+                parameterTypes, returnType);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MethodRef that)) {
+            return false;
+        }
+        return isStatic() == that.isStatic()
+                && isDeclaredInInterface == that.isDeclaredInInterface
+                && Objects.equals(getDeclaringClass(), that.getDeclaringClass())
+                && Objects.equals(getName(), that.getName())
+                && Objects.equals(parameterTypes, that.parameterTypes)
+                && Objects.equals(returnType, that.returnType);
+    }
+
+    @Override
+    public int hashCode() {
+        if (cachedHash == 0) {
+            int result = Hashes.hash(
+                    getDeclaringClass(),
+                    getName(),
+                    parameterTypes,
+                    returnType
+            );
+            result = 31 * result + (isStatic() ? 1 : 0);
+            result = 31 * result + (isDeclaredInInterface ? 1 : 0);
+            cachedHash = result;
+        }
+        return cachedHash;
+    }
+}

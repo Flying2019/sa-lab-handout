@@ -1,0 +1,57 @@
+-------------------- <ArrayLoops: void loopConst()> (inter-const-prop) --------------------
+[0@L-1] %ci0 = 0; {}
+[1@L-1] %ci1 = 1; {}
+[2@L-1] %ci3 = 3; {}
+[3@L-1] %ci5 = 5; {}
+[4@L10] a = newarray int[%ci5]; {}
+[5@L11] i = %ci0; {i=0}
+[6@L11] %v5 = a.length; {%v5=NAC, i=NAC}
+[7@L11] if (i >= %v5) goto 12; {%v5=NAC, i=NAC}
+[8@L12] %c6 = 666; {%v5=NAC, i=NAC}
+[9@L12] a[i] = %c6; {%v5=NAC, i=NAC}
+[10@L11] i = i + %ci1; {%v5=NAC, i=NAC}
+[11@L11] goto 6; {%v5=NAC, i=NAC}
+[12@L14] %v9 = a[%ci3]; {%v5=NAC, %v9=666, i=NAC}
+[13@L15] return; {%v5=NAC, %v9=666, i=NAC}
+
+-------------------- <ArrayLoops: void loopMix()> (inter-const-prop) --------------------
+[0@L-1] %ci0 = 0; {}
+[1@L-1] %ci1 = 1; {}
+[2@L-1] %ci3 = 3; {}
+[3@L-1] %ci4 = 4; {}
+[4@L-1] %ci5 = 5; {}
+[5@L18] a = newarray int[%ci5]; {}
+[6@L19] i = %ci0; {i=0}
+[7@L19] %v6 = a.length; {%v6=NAC, i=NAC}
+[8@L19] if (i >= %v6) goto 13; {%v6=NAC, i=NAC}
+[9@L20] %c7 = 666; {%v6=NAC, i=NAC}
+[10@L20] a[i] = %c7; {%v6=NAC, i=NAC}
+[11@L19] i = i + %ci1; {%v6=NAC, i=NAC}
+[12@L19] goto 7; {%v6=NAC, i=NAC}
+[13@L22] %c10 = 777; {%v6=NAC, i=NAC}
+[14@L22] a[%ci4] = %c10; {%v6=NAC, i=NAC}
+[15@L23] %v12 = a[%ci3]; {%v12=666, %v6=NAC, i=NAC}
+[16@L24] %v13 = a[%ci4]; {%v12=666, %v13=NAC, %v6=NAC, i=NAC}
+[17@L25] return; {%v12=666, %v13=NAC, %v6=NAC, i=NAC}
+
+-------------------- <ArrayLoops: void loopNAC()> (inter-const-prop) --------------------
+[0@L-1] %ci0 = 0; {}
+[1@L-1] %ci1 = 1; {}
+[2@L-1] %ci3 = 3; {}
+[3@L-1] %ci5 = 5; {}
+[4@L28] a = newarray int[%ci5]; {}
+[5@L29] i = %ci0; {i=0}
+[6@L29] %v5 = a.length; {%v5=NAC, i=NAC}
+[7@L29] if (i >= %v5) goto 11; {%v5=NAC, i=NAC}
+[8@L30] a[i] = i; {%v5=NAC, i=NAC}
+[9@L29] i = i + %ci1; {%v5=NAC, i=NAC}
+[10@L29] goto 6; {%v5=NAC, i=NAC}
+[11@L32] %v8 = a[%ci3]; {%v5=NAC, %v8=NAC, i=NAC}
+[12@L33] return; {%v5=NAC, %v8=NAC, i=NAC}
+
+-------------------- <ArrayLoops: void main(java.lang.String[])> (inter-const-prop) --------------------
+[0@L4] invokestatic <ArrayLoops: void loopConst()>(); {}
+[1@L5] invokestatic <ArrayLoops: void loopMix()>(); {}
+[2@L6] invokestatic <ArrayLoops: void loopNAC()>(); {}
+[3@L7] return; {}
+

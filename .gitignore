@@ -1,0 +1,15 @@
+.work/
+.gradle/
+build/
+__pycache__/
+*.pyc
+.venv/
+/results/
+/grader/hidden/
+/handout/tests/a2/
+/handout/tests/a3/
+/handout/tests/a4/
+/handout/tests/a5/
+/handout/tests/b1/
+/handout/tests/b2/
+/handout/tests/b3/

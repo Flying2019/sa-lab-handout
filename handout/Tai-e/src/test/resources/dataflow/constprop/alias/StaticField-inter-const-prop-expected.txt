@@ -1,0 +1,6 @@
+-------------------- <StaticField: void main(java.lang.String[])> (inter-const-prop) --------------------
+[0@L6] %c2 = 100; {}
+[1@L6] <StaticField: int f> = %c2; {}
+[2@L7] %v3 = <StaticField: int f>; {%v3=100}
+[3@L8] return; {%v3=100}
+

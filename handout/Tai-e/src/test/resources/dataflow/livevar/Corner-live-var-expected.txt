@@ -1,0 +1,23 @@
+-------------------- <Corner: int deadLoop()> (live-var) --------------------
+[0@L-1] %ci1 = 1; [%ci1]
+[1@L15] a = %ci1; [%ci1, a]
+[2@L16] if (a < %ci1) goto 5; [%ci1, a]
+[3@L17] a = a + %ci1; [%ci1, a]
+[4@L17] goto 2; [%ci1, a]
+[5@L19] return a; []
+
+-------------------- <Corner: int exit()> (live-var) --------------------
+[0@L-1] %ci1 = 1; [%ci1]
+[1@L3] return %ci1; []
+
+-------------------- <Corner: void <init>()> (live-var) --------------------
+[0@L1] invokespecial this.<java.lang.Object: void <init>()>(); []
+[1@L1] return; []
+
+-------------------- <Corner: void exit2()> (live-var) --------------------
+[0@L-1] %ci1 = 1; []
+[1@L8] return; []
+
+-------------------- <Corner: void exit3()> (live-var) --------------------
+[0@L12] return; []
+

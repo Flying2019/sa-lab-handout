@@ -1,0 +1,14 @@
+-------------------- <SimpleConstant: void <init>()> (const-prop) --------------------
+[0@L1] invokespecial this.<java.lang.Object: void <init>()>(); {}
+[1@L1] return; {}
+
+-------------------- <SimpleConstant: void constant()> (const-prop) --------------------
+[0@L-1] %ci1 = 1; {}
+[1@L-1] %ci2 = 2; {}
+[2@L-1] %ci3 = 3; {}
+[3@L7] return; {}
+
+-------------------- <SimpleConstant: void propagation()> (const-prop) --------------------
+[0@L10] x = 10; {}
+[1@L13] return; {}
+

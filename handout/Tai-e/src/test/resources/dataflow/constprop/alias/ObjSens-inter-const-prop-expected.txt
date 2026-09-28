@@ -1,0 +1,36 @@
+-------------------- <ObjSens: void main(java.lang.String[])> (inter-const-prop) --------------------
+[0@L4] x1 = new X; {}
+[1@L4] invokespecial x1.<X: void <init>()>(); {}
+[2@L5] y1 = new Y; {}
+[3@L5] invokespecial y1.<Y: void <init>()>(); {}
+[4@L6] invokevirtual x1.<X: void setY(Y)>(y1); {}
+[5@L8] x2 = new X; {}
+[6@L8] invokespecial x2.<X: void <init>()>(); {}
+[7@L9] y2 = new Y; {}
+[8@L9] invokespecial y2.<Y: void <init>()>(); {}
+[9@L10] invokevirtual x2.<X: void setY(Y)>(y2); {}
+[10@L12] yy1 = invokevirtual x1.<X: Y getY()>(); {}
+[11@L13] %c13 = 147; {}
+[12@L13] yy1.<Y: int f> = %c13; {}
+[13@L14] yy2 = invokevirtual x2.<X: Y getY()>(); {}
+[14@L15] %c15 = 258; {}
+[15@L15] yy2.<Y: int f> = %c15; {}
+[16@L16] %v16 = yy1.<Y: int f>; {%v16=147}
+[17@L17] return; {%v16=147}
+
+-------------------- <X: Y getY()> (inter-const-prop) --------------------
+[0@L29] %v1 = this.<X: Y y>; {}
+[1@L29] return %v1; {}
+
+-------------------- <X: void <init>()> (inter-const-prop) --------------------
+[0@L20] invokespecial this.<java.lang.Object: void <init>()>(); {}
+[1@L20] return; {}
+
+-------------------- <X: void setY(Y)> (inter-const-prop) --------------------
+[0@L25] this.<X: Y y> = y; {}
+[1@L26] return; {}
+
+-------------------- <Y: void <init>()> (inter-const-prop) --------------------
+[0@L33] invokespecial this.<java.lang.Object: void <init>()>(); {}
+[1@L33] return; {}
+

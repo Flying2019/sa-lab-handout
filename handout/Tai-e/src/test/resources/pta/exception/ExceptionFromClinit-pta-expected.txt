@@ -1,0 +1,17 @@
+Points-to sets of all variables
+[<ExceptionFromClinit: void main(java.lang.String[])>[1@L3] invokespecial it.<init>()]:<InstanceThrower: void <init>()>/this -> [[]:NewObj{<ExceptionFromClinit: void main(java.lang.String[])>[0@L3] new InstanceThrower}]
+[<ExceptionFromClinit: void main(java.lang.String[])>[2@L4] invokevirtual it.throwE()]:<InstanceThrower: void throwE()>/this -> [[]:NewObj{<ExceptionFromClinit: void main(java.lang.String[])>[0@L3] new InstanceThrower}]
+[<ExceptionFromClinit: void main(java.lang.String[])>[3@L5] invokestatic ExceptionFromClinit.throwE()]:<ExceptionFromClinit: void throwE()>/%c0 -> [[]:ConstantObj{java.lang.Class: java.lang.Object.class}]
+[<ExceptionFromClinit: void main(java.lang.String[])>[3@L5] invokestatic ExceptionFromClinit.throwE()]:<ExceptionFromClinit: void throwE()>/%v1 -> [[]:MergedObj{<Merged java.lang.RuntimeException>}]
+[<StaticThrower: void throwE()>[0@L22] invokestatic ExceptionFromClinit.throwE()]:<ExceptionFromClinit: void throwE()>/%c0 -> [[]:ConstantObj{java.lang.Class: java.lang.Object.class}]
+[<StaticThrower: void throwE()>[0@L22] invokestatic ExceptionFromClinit.throwE()]:<ExceptionFromClinit: void throwE()>/%v1 -> [[]:MergedObj{<Merged java.lang.RuntimeException>}]
+[]:<ExceptionFromClinit: void main(java.lang.String[])>/args -> [[]:EntryPointObj{alloc=MethodParam{<ExceptionFromClinit: void main(java.lang.String[])>/0},type=java.lang.String[] in <ExceptionFromClinit: void main(java.lang.String[])>}]
+[]:<ExceptionFromClinit: void main(java.lang.String[])>/it -> [[]:NewObj{<ExceptionFromClinit: void main(java.lang.String[])>[0@L3] new InstanceThrower}]
+
+Points-to sets of all static fields
+
+Points-to sets of all instance fields
+
+Points-to sets of all array indexes
+[]:EntryPointObj{alloc=MethodParam{<ExceptionFromClinit: void main(java.lang.String[])>/0},type=java.lang.String[] in <ExceptionFromClinit: void main(java.lang.String[])>}[*] -> [[]:EntryPointObj{alloc=MethodParam{<ExceptionFromClinit: void main(java.lang.String[])>/0}[*],type=java.lang.String in <ExceptionFromClinit: void main(java.lang.String[])>}]
+

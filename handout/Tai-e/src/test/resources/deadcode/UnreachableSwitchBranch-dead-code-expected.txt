@@ -1,0 +1,12 @@
+-------------------- <UnreachableSwitchBranch: void <init>()> (dead-code) --------------------
+
+-------------------- <UnreachableSwitchBranch: void lookupSwitch()> (dead-code) --------------------
+[6@L8] invokevirtual this.<UnreachableSwitchBranch: void use(int)>(%ci2);
+[7@L9] goto 15;
+[8@L11] invokevirtual this.<UnreachableSwitchBranch: void use(int)>(%ci4);
+[9@L12] goto 15;
+[13@L17] %c9 = 666;
+[14@L17] invokevirtual this.<UnreachableSwitchBranch: void use(int)>(%c9);
+
+-------------------- <UnreachableSwitchBranch: void use(int)> (dead-code) --------------------
+

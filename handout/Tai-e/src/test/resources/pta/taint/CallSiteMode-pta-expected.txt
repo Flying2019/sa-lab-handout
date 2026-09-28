@@ -1,0 +1,18 @@
+Points-to sets of all variables
+[]:<CallSiteMode: void main(java.lang.String[])>/args -> [[]:EntryPointObj{alloc=MethodParam{<CallSiteMode: void main(java.lang.String[])>/0},type=java.lang.String[] in <CallSiteMode: void main(java.lang.String[])>}]
+[]:<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>/%c8 -> [[]:ConstantObj{java.lang.String: "select * from users where id = '"}]
+[]:<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>/%c9 -> [[]:ConstantObj{java.lang.String: "'"}]
+[]:<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>/input -> [[]:TaintObj{alloc=<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>[0@L8] input = invokeinterface source.getSource()/result,type=java.lang.String}]
+[]:<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>/sb -> [[]:TaintObj{alloc=<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>[0@L8] input = invokeinterface source.getSource()/result,type=StringBuilder}]
+[]:<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>/sql -> [[]:TaintObj{alloc=<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>[0@L8] input = invokeinterface source.getSource()/result,type=java.lang.String}]
+
+Points-to sets of all static fields
+
+Points-to sets of all instance fields
+
+Points-to sets of all array indexes
+[]:EntryPointObj{alloc=MethodParam{<CallSiteMode: void main(java.lang.String[])>/0},type=java.lang.String[] in <CallSiteMode: void main(java.lang.String[])>}[*] -> [[]:EntryPointObj{alloc=MethodParam{<CallSiteMode: void main(java.lang.String[])>/0}[*],type=java.lang.String in <CallSiteMode: void main(java.lang.String[])>}]
+
+Detected 1 taint flow(s):
+TaintFlow{<CallSiteMode: void testConnection(Source,StringBuilder,Connection)>[0@L8] input = invokeinterface source.getSource()/result -> <CallSiteMode: void testConnection(Source,StringBuilder,Connection)>[8@L14] invokeinterface stmt.executeQuery(sql)/0}
+

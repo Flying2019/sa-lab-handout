@@ -1,0 +1,14 @@
+-------------------- <Corner: int foo(int)> (dead-code) --------------------
+
+-------------------- <Corner: int invoke()> (dead-code) --------------------
+[0@L-1] %ci1 = 1;
+
+-------------------- <Corner: int sideEffectAssignment()> (dead-code) --------------------
+[0@L-1] %ci1 = 1;
+
+-------------------- <Corner: void <init>()> (dead-code) --------------------
+
+-------------------- <Corner: void sideEffectDivide()> (dead-code) --------------------
+
+-------------------- <Corner: void sideEffectMod()> (dead-code) --------------------
+

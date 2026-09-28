@@ -1,0 +1,15 @@
+Points-to sets of all variables
+[]:<CycleTaint: void main(java.lang.String[])>/args -> [[]:EntryPointObj{alloc=MethodParam{<CycleTaint: void main(java.lang.String[])>/0},type=java.lang.String[] in <CycleTaint: void main(java.lang.String[])>}]
+[]:<CycleTaint: void main(java.lang.String[])>/s1 -> [[]:MergedObj{<Merged java.lang.String>}]
+[]:<SourceSink: java.lang.String source()>/%v0 -> [[]:MergedObj{<Merged java.lang.String>}]
+[]:<SourceSink: void sink(java.lang.String)>/s -> [[]:MergedObj{<Merged java.lang.String>}]
+
+Points-to sets of all static fields
+
+Points-to sets of all instance fields
+
+Points-to sets of all array indexes
+[]:EntryPointObj{alloc=MethodParam{<CycleTaint: void main(java.lang.String[])>/0},type=java.lang.String[] in <CycleTaint: void main(java.lang.String[])>}[*] -> [[]:EntryPointObj{alloc=MethodParam{<CycleTaint: void main(java.lang.String[])>/0}[*],type=java.lang.String in <CycleTaint: void main(java.lang.String[])>}]
+
+Detected 0 taint flow(s):
+

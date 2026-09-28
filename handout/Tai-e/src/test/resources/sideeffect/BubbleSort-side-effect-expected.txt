@@ -1,0 +1,12 @@
+-------------------- <BubbleSort: void main(java.lang.String[])> (side-effect) --------------------
+[7@L4] array[%ci0] = %ci3; [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+[8@L4] array[%ci1] = %ci4; [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+[9@L4] array[%ci2] = %ci1; [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+[10@L4] array[%ci3] = %ci2; [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+[11@L4] array[%ci4] = %ci5; [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+[12@L5] invokestatic <BubbleSort: void bubbleSort(int[],int)>(array, %ci5); [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+
+-------------------- <BubbleSort: void bubbleSort(int[],int)> (side-effect) --------------------
+[11@L13] array[i] = %v10; [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+[12@L14] array[j] = tmp; [NewObj{<BubbleSort: void main(java.lang.String[])>[6@L4] newarray int[%ci5]}]
+

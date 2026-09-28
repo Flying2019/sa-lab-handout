@@ -1,0 +1,15 @@
+-------------------- <Field: int timeFlies(int)> (live-var) --------------------
+[0@L6] %v2 = this.<Field: int age>; [%v2, this, years]
+[1@L6] %v3 = %v2 + years; [%v3, this, years]
+[2@L6] this.<Field: int age> = %v3; [this, years]
+[3@L7] %v4 = <java.lang.System: java.io.PrintStream out>; [%v4, this, years]
+[4@L7] %v5 = this.<Field: java.lang.String name>; [%v4, %v5, this, years]
+[5@L7] %v6 = invokedynamic <java.lang.invoke.StringConcatFactory: java.lang.invoke.CallSite makeConcatWithConstants(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.String,java.lang.Object[])> "makeConcatWithConstants" <MethodType: java.lang.String (java.lang.String,int)>["is  years older."](%v5, years); [%v4, %v6, this]
+[6@L7] invokevirtual %v4.<java.io.PrintStream: void println(java.lang.String)>(%v6); [this]
+[7@L8] %v7 = this.<Field: int age>; [%v7]
+[8@L8] return %v7; []
+
+-------------------- <Field: void <init>()> (live-var) --------------------
+[0@L1] invokespecial this.<java.lang.Object: void <init>()>(); []
+[1@L1] return; []
+
