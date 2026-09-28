@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 .venv/
 /results/
+/submission.tar.gz
 /grader/hidden/
 /handout/.env
 /handout/compose.override.yaml

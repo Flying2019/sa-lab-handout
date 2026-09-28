@@ -7,6 +7,7 @@ TIMEOUT ?= 30
 COMMAND ?=
 INPUT ?=
 OUTPUT ?=
+PACKAGE ?= ../submission.tar.gz
 
 ifeq ($(OS),Windows_NT)
 PYTHON ?= python
@@ -16,11 +17,14 @@ PYTHON ?= python3
 GRADLE ?= ./gradlew
 endif
 
-.PHONY: all build check test smt-check a1 a2 a3 a4 a5 b1 b2 b3 help
+.PHONY: all build check test package smt-check a1 a2 a3 a4 a5 b1 b2 b3 help
 all: build
 
 build:
 	cd Tai-e && $(GRADLE) fatJar
+
+package:
+	$(PYTHON) script/package.py --output "$(PACKAGE)"
 
 smt-check:
 	cd Tai-e && $(GRADLE) smtCheck
@@ -48,6 +52,7 @@ a1 a2 a3 a4 a5 b1 b2 b3:
 
 help:
 	@echo make build
+	@echo make package
 	@echo make smt-check
 	@echo make check
 	@echo make test PROFILE=a1

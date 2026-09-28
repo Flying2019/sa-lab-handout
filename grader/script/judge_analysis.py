@@ -6,10 +6,10 @@ SIGNS = {'+': {1}, '-': {-1}, '0': {0}, '+0': {0, 1},
 def point_set(value, case):
     tokens = value.split()
     if any(not t.isascii() or not t.isdecimal() or t.startswith('0') for t in tokens):
-        raise ValueError('ERROR')
+        raise ValueError('WRONG')
     ids = [int(t) for t in tokens]
     if len(ids) != len(set(ids)) or not set(ids) <= set(case['allocations']):
-        raise ValueError('ERROR')
+        raise ValueError('WRONG')
     return set(ids)
 
 
@@ -17,18 +17,18 @@ def bounds(value):
     parts = value.split(' .. ')
     if len(parts) == 1: parts *= 2
     if len(parts) != 2 or any(part not in SIGNS for part in parts):
-        raise ValueError('ERROR')
+        raise ValueError('WRONG')
     low, high = (SIGNS[part] for part in parts)
-    if not low <= high: raise ValueError('ERROR')
+    if not low <= high: raise ValueError('WRONG')
     return low, high
 
 
 def normalize(rows, case):
-    if rows.keys() != case['queries'].keys(): raise ValueError('ERROR')
+    if rows.keys() != case['queries'].keys(): raise ValueError('WRONG')
     result = {}
     for key, value in rows.items():
         if case['queries'][key] == 'sign':
-            if value not in SIGNS: raise ValueError('ERROR')
+            if value not in SIGNS: raise ValueError('WRONG')
             result[key] = SIGNS[value]
         else:
             result[key] = point_set(value, case)
@@ -36,7 +36,7 @@ def normalize(rows, case):
 
 
 def validate_expected(rows, case):
-    if rows.keys() != case['queries'].keys(): raise ValueError('ERROR')
+    if rows.keys() != case['queries'].keys(): raise ValueError('WRONG')
     for key, value in rows.items():
         if case['queries'][key] == 'sign': bounds(value)
         else: point_set(value, case)

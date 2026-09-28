@@ -4,7 +4,7 @@ from .runtime import run
 
 def validate_expected(rows, case):
     if rows.keys() != case['queries'].keys() or any(v not in {'reachable','unreachable'} for v in rows.values()):
-        raise ValueError('ERROR')
+        raise ValueError('WRONG')
 
 
 def check(actual, expected, case, input_root, home, java='java'):
@@ -42,10 +42,10 @@ def domain(task):
 
 
 def validate_parameters(task, types):
-    if task not in {'b1','b2','b3'} or any(t not in {'int','int[]'} for t in types): raise ValueError('ERROR')
+    if task not in {'b1','b2','b3'} or any(t not in {'int','int[]'} for t in types): raise ValueError('WRONG')
     if task == "b3":
-        if types.count("int[]") > 1 or types.count("int") > 1: raise ValueError('ERROR')
-    elif types.count("int") > 2 or "int[]" in types: raise ValueError('ERROR')
+        if types.count("int[]") > 1 or types.count("int") > 1: raise ValueError('WRONG')
+    elif types.count("int") > 2 or "int[]" in types: raise ValueError('WRONG')
 
 
 def parse_input(text, types, task):

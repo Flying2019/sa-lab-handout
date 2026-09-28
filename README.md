@@ -48,13 +48,11 @@ git pull --no-rebase origin main
 
 ## 构建与测试
 
-本机运行需要 JDK 17 或更高版本、Python 3.8 或更高版本和 Make。Linux 默认使用 `python3`，Windows 默认使用 `python`；可通过 `make a1 PYTHON=/path/to/python3` 指定解释器。
+本机运行需要 JDK 17+、Python 3.8+ 和 Make。在 `handout/` 目录运行 `make build` 或 `./run_build.sh` 将构建整个项目。运行 `make a1` 将测试 A1 实验的公开数据。
 
-在 `handout/` 目录运行 `make build` 或 `./run_build.sh` 将构建整个项目。运行 `make a1` 将测试 A1 实验的公开数据。
+本项目使用 JavaSMT 调用 Z3，Z3 依赖由 Gradle 自动管理。在 `handout/` 下运行 `make smt-check` 可验证 JavaSMT 和 Z3 的加载与求解。Java 示例见 [SMT 指南](docs/smt.md)，其余命令见 [Makefile](handout/Makefile)。
 
-由于 Lab 2 将会使用到 SMT Solver，如果你计划使用本项目的依赖，可以使用 `make smt-check` 检查 SMT 配置。该指令将会运行 JavaSMT 示例，具体用法见 [SMT 指南](docs/smt.md)。其余指令内容可以查看 [Makefile](handout/Makefile)。
-
-Docker 测试在仓库根目录运行，本机只需 Python 3.8 或更高版本和 Docker：
+Docker 测试在仓库根目录运行，本机只需 Python 和 Docker：
 
 ```bash
 python3 grader/grade_submission.py --submission handout --cases handout/tests --profile a1 --output results/a1
@@ -66,15 +64,21 @@ python3 grader/grade_submission.py --submission handout --cases handout/tests --
 
 你需要提交包含根目录 `Dockerfile` 和 `handout/` 的压缩文件。`handout/` 中必须保留 `run_build.sh` 和 `run_test.sh`。评测工具 grader/ 不要放入压缩文件。**建议非必要不更改 Dockerfile 配置**。
 
+在 `handout/` 目录运行以下命令，生成仓库根目录的 `submission.tar.gz`：
+
+```bash
+make package
+```
+
+也可运行 `python script/package.py`。自定义文件名使用 `make package PACKAGE=../学号.tar.gz`。
+
 评测时会先运行一次 `./run_build.sh`。构建成功后针对每个测试用例分别运行 `./run_test.sh <input.java> <output>`。下发的模板项目中，默认构建脚本执行 `make build`，测试脚本执行 `make test INPUT="<input.java>" OUTPUT="<output>"`。
 
 测试时作业编号通过环境变量 `SA_PROFILE` 提供（例如 `SA_PROFILE=a1` 表示当前调用 a1 测试）。如果有必要，你可以通过该环境变量判断运行方式。具体的本地测试命令见 [评测说明](grader-README.md)。
 
 ## 结果与计分
 
-每个测试点满分 2 分，正常结束得 1 分。构建失败、非零退出、超时或输出超过限制得 0 分。正常结束但结果缺失、格式错误、漏报查询或漏分析结果，得 1 分。日志和结果文件各限 2 MB。
-
-正常运行后，每个测试点实际得分为 1+精度分。精度分设置见下表。
+每个测试点满分 2 分，正常结束即可得 1 分。正常运行后，每个测试点实际得分为 1+精度分。精度分设置见下表。
 
 | 查询 | 判定条件 | 精度分 |
 | --- | --- | --- |
