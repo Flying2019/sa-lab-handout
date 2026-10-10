@@ -1,6 +1,5 @@
 package pku;
 
-import pascal.taie.World;
 import pascal.taie.analysis.ProgramAnalysis;
 import pascal.taie.config.AnalysisConfig;
 
@@ -14,22 +13,8 @@ public class CourseAnalysis extends ProgramAnalysis<CourseResult> {
 
     @Override
     public CourseResult analyze() {
-        String profile = System.getenv("SA_PROFILE");
-        if (profile == null) {
-            throw new IllegalStateException("Run through the course adapter (SA_PROFILE is required)");
-        }
-        var markers = new Preprocess();
-        World.get().getClassHierarchy().applicationClasses().forEach(c -> {
-            if (!c.getName().equals("benchmark.internal.Benchmark")) {
-                c.getDeclaredMethods().forEach(m -> {
-                    if (!m.isAbstract() && !m.isNative()) {
-                        markers.scan(m.getIR());
-                    }
-                });
-            }
-        });
-        var result = new TrivialSolver().solve(profile, markers);
-        result.write(System.getenv("SA_OUTPUT"));
+        var result = new TrivialSolver().solve();
+        result.write();
         return result;
     }
 }

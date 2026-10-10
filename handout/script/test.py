@@ -63,13 +63,13 @@ def judge(args):
                 command = [args.java,'-Djava.library.path='+str(args.jar.resolve().parent/'smt-native'),
                            '-jar',str(args.jar.resolve()),'-a',
                            'pku-se' if case['profile'].startswith('b') else 'pku-course',
-                           '--output-dir',str(case_home/'tai-e'),'-cp',str(inputs/'classes'),'-m','PkuEntry']
+                           '--output',str(output),'-cp',str(inputs/'classes'),'-m',case['launch_entry']]
             else:
                 values = {'input':str(item[2][0]),'prepared':str(inputs),'output':str(output),'entry':case['entry'],
                           'classpath':str(inputs/'classes'),'task':case['profile'],
                           'profile':case['profile'],'python':sys.executable}
                 command = [values[t[1:-1]] if t.startswith('{') and t.endswith('}') else t for t in args.command]
-            env={'SA_INPUT':str(inputs),'SA_OUTPUT':str(output),'SA_TASK':case['profile'],
+            env={'SA_INPUT':str(inputs),'SA_TASK':case['profile'],
                  'SA_PROFILE':case['profile'],'SA_CONTEXT':case.get('context','')}
             saved={key:os.environ.get(key) for key in env}
             try:
@@ -115,14 +115,14 @@ def analyze(args):
     output=args.output.resolve()
     output.parent.mkdir(parents=True,exist_ok=True)
     output.unlink(missing_ok=True)
-    os.environ.update(SA_INPUT=str(inputs),SA_OUTPUT=str(output),
+    os.environ.update(SA_INPUT=str(inputs),
                       SA_PROFILE=case['profile'],SA_TASK=case['profile'],
                       SA_CONTEXT=case.get('context',''))
     if args.jar:
         command=[args.java,'-Djava.library.path='+str(args.jar.resolve().parent/'smt-native'),
                  '-jar',str(args.jar.resolve()),'-a',
                  'pku-se' if case['profile'].startswith('b') else 'pku-course',
-                 '--output-dir',str(output.parent/'tai-e'),'-cp',str(inputs/'classes'),'-m','PkuEntry']
+                 '--output',str(output),'-cp',str(inputs/'classes'),'-m',case['launch_entry']]
     else:
         values={'input':str(source),'prepared':str(inputs),'output':str(output),'classpath':str(inputs/'classes'),
                 'entry':case['entry'],'profile':case['profile'],'task':case['profile'],'python':sys.executable}

@@ -1,7 +1,8 @@
-package demo;
+package a1;
 import benchmark.internal.Benchmark;
 public class NestedControlNegative {
-    public static void NestedControlNegative(int input) {
+    public static void main(String[] args) {
+        int input=args.length-4;
         if(input < -4) input = -4;
         if(input > 4) input = 4;
         int i=0;
@@ -34,15 +35,15 @@ public class NestedControlNegative {
 同一占位符的所有出现位置使用相同取值；不同占位符可同时改变。
 行号以本文件注释前的程序为准。
 
-第 10 行：
+第 11 行：
         while(i<%2) {
 
-第 13 行：
+第 14 行：
             while(j<%2+1) {
 
-第 17 行：
+第 18 行：
                 x=x- %1;
 
-第 19 行：
+第 20 行：
                 tail=tail- %1;
 */

@@ -29,7 +29,8 @@ public class SymbolicExecution extends ProgramAnalysis<Void> {
         // Replace this baseline with your own state exploration and SMT solving.
         // Merely visiting reach is insufficient: continue to normal entry return.
         try {
-            Files.write(Path.of(System.getenv("SA_OUTPUT")), ids.stream().map(id -> id + ": unknown").toList());
+            Files.write(World.get().getOptions().getOutputFile().toPath(),
+                    ids.stream().map(id -> id + ": unknown").toList());
         } catch (java.io.IOException e) { throw new java.io.UncheckedIOException(e); }
         return null;
     }

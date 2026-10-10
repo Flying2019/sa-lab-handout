@@ -84,7 +84,14 @@ val pku = sourceSets.create("pku") {
     java.setSrcDirs(listOf("src/test/pku"))
 }
 
+val syncPkuTests = tasks.register<Copy>("syncPkuTests") {
+    from("../tests") { include("**/*.java") }
+    from("../benchmark") { include("internal/Benchmark.java"); into("benchmark") }
+    into("src/test/pku")
+}
+
 tasks.named<JavaCompile>(pku.compileJavaTaskName) {
+    dependsOn(syncPkuTests)
     options.release.set(17)
     options.debugOptions.debugLevel = "source,lines,vars"
 }

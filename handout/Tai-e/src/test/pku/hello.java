@@ -1,5 +1,3 @@
-package pku;
-
 public class hello {
     public static int compute(int input) {
         int a = 10;

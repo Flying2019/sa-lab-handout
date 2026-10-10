@@ -1,7 +1,8 @@
-package demo;
+package a1;
 import benchmark.internal.Benchmark;
 public class Merge {
-    public static void Merge(int input) {
+    public static void main(String[] args) {
+        int input=args.length-4;
         if(input < -4) input = -4;
         if(input > 4) input = 4;
         int flag=input;
@@ -23,9 +24,9 @@ public class Merge {
 同一占位符的所有出现位置使用相同取值；不同占位符可同时改变。
 行号以本文件注释前的程序为准。
 
-第 9 行：
+第 10 行：
         if(flag>%2) {
 
-第 10 行：
+第 11 行：
             x=%1;
 */

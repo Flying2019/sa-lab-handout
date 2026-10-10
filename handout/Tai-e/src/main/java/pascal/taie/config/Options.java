@@ -262,16 +262,20 @@ public class Options implements Serializable {
     @JsonProperty
     @JsonSerialize(using = OutputDirSerializer.class)
     @JsonDeserialize(using = OutputDirDeserializer.class)
-    @Option(names = "--output-dir",
-            description = "Specify output directory (default: ${DEFAULT-VALUE})"
-                    + ", '" + PlaceholderAwareFile.AUTO_GEN + "' can be used as a placeholder"
-                    + " for an automatically generated timestamp",
-            defaultValue = DEFAULT_OUTPUT_DIR,
-            converter = OutputDirConverter.class)
-    private File outputDir;
+    private File outputDir = new PlaceholderAwareFile(DEFAULT_OUTPUT_DIR);
 
     public File getOutputDir() {
         return outputDir;
+    }
+
+    @JsonProperty
+    @Option(names = "--output",
+            description = "Analysis result file (default: ${DEFAULT-VALUE})",
+            defaultValue = "result.txt")
+    private File outputFile = new File("result.txt");
+
+    public File getOutputFile() {
+        return outputFile;
     }
 
     @JsonProperty
@@ -462,6 +466,8 @@ public class Options implements Serializable {
             options.addReflectionLogClasses();
         }
         // mkdir for output dir
+        File resultParent = options.outputFile.getAbsoluteFile().getParentFile();
+        resultParent.mkdirs();
         if (!options.outputDir.exists()) {
             options.outputDir.mkdirs();
         }

@@ -1,7 +1,8 @@
-package demo;
+package a1;
 import benchmark.internal.Benchmark;
 public class LoopBreak {
-    public static void LoopBreak(int input) {
+    public static void main(String[] args) {
+        int input=args.length-4;
         if(input < -4) input = -4;
         if(input > 4) input = 4;
         int i=0;
@@ -24,9 +25,9 @@ public class LoopBreak {
 同一占位符的所有出现位置使用相同取值；不同占位符可同时改变。
 行号以本文件注释前的程序为准。
 
-第 9 行：
+第 10 行：
         while(i<%2) {
 
-第 12 行：
+第 13 行：
             x=x+ %1;
 */

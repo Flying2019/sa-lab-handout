@@ -1,7 +1,8 @@
-package demo;
+package a1;
 import benchmark.internal.Benchmark;
 public class Arithmetic {
-    public static void Arithmetic(int input) {
+    public static void main(String[] args) {
+        int input=args.length-4;
         int x=6;
         int y=x*7;
         int z=y-50;
@@ -17,12 +18,12 @@ public class Arithmetic {
 同一占位符的所有出现位置使用相同取值；不同占位符可同时改变。
 行号以本文件注释前的程序为准。
 
-第 5 行：
+第 6 行：
         int x=%1;
 
-第 6 行：
+第 7 行：
         int y=x*%2;
 
-第 7 行：
+第 8 行：
         int z=y-(%3);
 */

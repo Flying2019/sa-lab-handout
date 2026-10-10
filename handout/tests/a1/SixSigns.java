@@ -1,7 +1,8 @@
-package demo;
+package a1;
 import benchmark.internal.Benchmark;
 public class SixSigns {
-    public static void SixSigns(int input) {
+    public static void main(String[] args) {
+        int input=args.length-4;
         int p=3;
         int n=-2;
         int z=0;
@@ -33,12 +34,12 @@ public class SixSigns {
 同一占位符的所有出现位置使用相同取值；不同占位符可同时改变。
 行号以本文件注释前的程序为准。
 
-第 5 行：
+第 6 行：
         int p=%1;
 
-第 6 行：
+第 7 行：
         int n=%2;
 
-第 7 行：
+第 8 行：
         int z=%3;
 */

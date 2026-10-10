@@ -25,7 +25,8 @@ def source_case(path, profile=None):
     if not re.search(r'public\s+class\s+'+re.escape(path.stem)+r'\b', code): raise ValueError('ERROR')
     package = re.search(r'\bpackage\s+([\w.]+)\s*;', code)
     entry = (package[1]+'.' if package else '')+path.stem
-    declarations = re.findall(r'public\s+static\s+(void|int)\s+'+re.escape(path.stem)+r'\s*\(([^)]*)\)',code)
+    entry_method = 'main' if profile.startswith('a') else path.stem
+    declarations = re.findall(r'public\s+static\s+(void|int)\s+'+re.escape(entry_method)+r'\s*\(([^)]*)\)',code)
     if len(declarations) != 1: raise ValueError('ERROR')
     return_type, parameters_text = declarations[0]
     parameters = []
@@ -36,8 +37,8 @@ def source_case(path, profile=None):
     queries, allocations, locations = markers([path])
     if not queries: raise ValueError('ERROR')
     if profile in {'a1','a2'}:
-        if (set(queries.values()) != {'sign'} or len(parameters)>3 or any(t!='int' for t in parameters)
-            or return_type!='void' or re.search(r'\b(args|Object|String|new|extends|implements|interface|main)\b|\[|\]',code)):
+        if (set(queries.values()) != {'sign'} or parameters!=['String[]']
+            or return_type!='void' or re.search(r'\b(args|Object|String|new|extends|implements|interface)\b|\[|\]', re.sub(r'public\s+static\s+void\s+main\s*\(String\[\] args\)', '', code).replace('args.length', '0'))):
             raise ValueError('ERROR')
     elif profile.startswith('b'):
         if set(queries.values()) != {'reach'} or allocations: raise ValueError('ERROR')
@@ -46,7 +47,7 @@ def source_case(path, profile=None):
         raise ValueError('ERROR')
     if profile in {'a3','a4'} and set(queries.values()) != {'points'}: raise ValueError('ERROR')
     case = {'id':profile+'-'+path.stem, 'task':profile, 'profile':profile, 'entry':entry,
-            'entry_method':path.stem, 'parameters':parameters, 'launch_entry':'PkuEntry',
+            'entry_method':entry_method, 'parameters':parameters, 'launch_entry':entry if profile.startswith('a') else 'PkuEntry',
             'queries':queries, 'allocations':allocations}
     if profile=='a4':
         case['context'] = '1-call' if path.stem.endswith('1Call') else '1-object' if path.stem.endswith('1Object') else None
@@ -83,12 +84,11 @@ def prepare(item, dest, javac, java='java'):
     shutil.copy2(ROOT/'benchmark/internal/Benchmark.java', sdk)
     if case['profile'].startswith('b'):
         shutil.copy2(ROOT/'script/CourseReplay.java', source/'CourseReplay.java')
-    defaults={'int':'0','int[]':'new int[0]','String[]':'args'}
-    wrapper=source/'PkuEntry.java'
-    if wrapper.exists(): raise ValueError('ERROR')
-    wrapper.write_text('public class PkuEntry { public static void main(String[] args) { '
-                       +case['entry']+'.'+case['entry_method']+'('
-                       +','.join(defaults[t] for t in case['parameters'])+'); }}',encoding='utf-8')
+    if case['profile'].startswith('b'):
+        defaults={'int':'0','int[]':'new int[0]'}
+        (source/'PkuEntry.java').write_text('public class PkuEntry { public static void main(String[] args) { '
+            +case['entry']+'.'+case['entry_method']+'('
+            +','.join(defaults[t] for t in case['parameters'])+'); }}',encoding='utf-8')
     sources=sorted(source.rglob('*.java'))
     argfile=dest/'javac.args'
     argfile.write_text('\n'.join('"'+p.as_posix()+'"' for p in sources),encoding='utf-8')
@@ -97,7 +97,6 @@ def prepare(item, dest, javac, java='java'):
     if execution['status']!='ok': raise ValueError('ERROR')
     request=dict(case,source_root='src',classpath=['classes'],query_locations=locations,
                  source_hashes={p.relative_to(source).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sources})
-    if case['profile'] in {'a1','a2'}: request['parameter_signs']=['+-0']*len(case['parameters'])
     if case['profile'].startswith('b'):
         request['domain']=judge_symbolic.domain(case['profile'])
         request['bounds']={'precise_unroll':4, 'nested_loops':True, 'recursion':True}
