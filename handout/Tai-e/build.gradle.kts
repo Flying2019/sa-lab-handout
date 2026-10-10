@@ -80,6 +80,19 @@ application {
     applicationName = projectArtifactId
 }
 
+val pku = sourceSets.create("pku") {
+    java.setSrcDirs(listOf("src/test/pku"))
+}
+
+tasks.named<JavaCompile>(pku.compileJavaTaskName) {
+    options.release.set(17)
+    options.debugOptions.debugLevel = "source,lines,vars"
+}
+
+tasks.named<JavaExec>("run") {
+    dependsOn(pku.classesTaskName)
+}
+
 val apiDocs = tasks.named("javadoc")
 val docsProject = project(":docs")
 

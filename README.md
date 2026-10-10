@@ -50,6 +50,14 @@ git pull --no-rebase origin main
 
 本机运行需要 JDK 17+、Python 3.8+ 和 Make。在 `handout/` 目录运行 `make build` 或 `./run_build.sh` 将构建整个项目。运行 `make a1` 将测试 A1 实验的公开数据。
 
+用于手动分析的程序放在 `handout/Tai-e/src/test/pku/`。在 `handout/Tai-e/` 目录执行以下命令，Gradle 自动编译该目录及分析器，并导出 `hello.java` 的 IR：
+
+```bash
+./gradlew run --args="-cp build/classes/java/pku -m pku.hello -a ir-dumper --output-dir build/pku-ir"
+```
+
+输出位于 `build/pku-ir/tir/pku.hello.tir`。运行其他分析时，将 `ir-dumper` 替换为已注册的分析 ID；不含 `main` 的程序使用 `--input-classes 完整类名` 替换 `-m pku.hello`。Windows 使用 `gradlew.bat`。
+
 本项目使用 JavaSMT 调用 Z3，Z3 依赖由 Gradle 自动管理。在 `handout/` 下运行 `make smt-check` 可验证 JavaSMT 和 Z3 的加载与求解。Java 示例见 [SMT 指南](docs/smt.md)，其余命令见 [Makefile](handout/Makefile)。
 
 Docker 测试在仓库根目录运行，本机只需 Python 和 Docker：

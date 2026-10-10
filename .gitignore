@@ -9,6 +9,9 @@ __pycache__/
 /grader/hidden/
 /handout/.env
 /handout/compose.override.yaml
+bin/
+.vscode/
+output/
 /handout/tests/a2/
 /handout/tests/a3/
 /handout/tests/a4/
@@ -16,5 +19,3 @@ __pycache__/
 /handout/tests/b1/
 /handout/tests/b2/
 /handout/tests/b3/
-bin/
-.vscode/
