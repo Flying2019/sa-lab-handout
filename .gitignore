@@ -16,3 +16,5 @@ __pycache__/
 /handout/tests/b1/
 /handout/tests/b2/
 /handout/tests/b3/
+bin/
+.vscode/
