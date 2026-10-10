@@ -43,6 +43,7 @@ git pull --no-rebase origin main
 | CourseResult.java | Lab1 打印结果 |
 | TrivialSolver.java | 遍历 IR、识别标记并生成基础结果 |
 | SymbolicExecution.java | Lab2 分析入口 |
+| SymbolicInput.java | 从 Tai-e IR 读取 Lab2 入口、目标和输入范围 |
 | SmtExample.java | Java-SMT 模板展示 |
 
 ## 构建与测试
@@ -79,9 +80,11 @@ make package
 
 也可运行 `python script/package.py`。自定义文件名使用 `make package PACKAGE=../学号.tar.gz`。
 
-评测时会先运行一次 `./run_build.sh`。构建成功后针对每个测试用例分别运行 `./run_test.sh <input.java> <output>`。下发的模板项目中，默认构建脚本执行 `make build`，测试脚本执行 `make test INPUT="<input.java>" OUTPUT="<output>"`。
+评测时会先运行一次 `./run_build.sh`。构建成功后针对每个测试用例分别运行 `./run_test.sh <input.java> <output>`。下发的模板项目中，默认构建脚本执行 `make build`。
 
-Tai-e 课程分析通过 `--output <file>` 指定结果文件，默认为 `result.txt`。具体的本地测试命令见 [评测说明](grader-README.md)。
+评测环境通过输入文件父目录名指定作业编号。你可以根据该信息决定实现方式。
+
+Tai-e 课程分析通过 `--output <file>` 指定结果文件，默认为 `result.txt`。Lab2 还需要额外通过 `--input-classes <类名>` 指定入口类。批量测试、结果判定和计分等详细信息见 [评测说明](grader-README.md)。
 
 ## 结果与计分
 

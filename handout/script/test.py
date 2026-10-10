@@ -56,14 +56,15 @@ def judge(args):
         case_home = home/case['id']; case_home.mkdir()
         inputs, output = case_home/'input', case_home/'result.txt'
         passed = False
+        status = 'error'
         points = 0.0
         try:
             prepare(item, inputs, args.javac, args.java)
             if args.jar:
                 command = [args.java,'-Djava.library.path='+str(args.jar.resolve().parent/'smt-native'),
                            '-jar',str(args.jar.resolve()),'-a',
-                           'pku-se' if case['profile'].startswith('b') else 'pku-course',
-                           '--output',str(output),'-cp',str(inputs/'classes'),'-m',case['launch_entry']]
+                           'pku-se=task:'+case['profile'] if case['profile'].startswith('b') else 'pku-course',
+                           '--output',str(output),'-cp',str(inputs/'classes'),'--input-classes' if case['profile'].startswith('b') else '-m',case['entry']]
             else:
                 values = {'input':str(item[2][0]),'prepared':str(inputs),'output':str(output),'entry':case['entry'],
                           'classpath':str(inputs/'classes'),'task':case['profile'],
@@ -79,12 +80,14 @@ def judge(args):
                 for key,value in saved.items():
                     if value is None: os.environ.pop(key,None)
                     else: os.environ[key]=value
+            status = 'wrong' if execution['status']=='ok' else 'error'
             points = assess_output(execution, output, item, inputs, case_home, args.java)
             passed = points == 2.0
+            if passed: status = 'pass'
         except (OSError, ValueError, KeyError):
             pass
-        results.append({'case':case['id'],'status':'pass' if passed else 'error','score':points,'max_score':2})
-        print('PASS' if passed else 'ERROR',case['id'],f'{points:.6f}/2',flush=True)
+        results.append({'case':case['id'],'status':status,'score':points,'max_score':2})
+        print(status.upper(),case['id'],f'{points:.6f}/2',flush=True)
     report={'results':results,'passed':sum(r['status']=='pass' for r in results),'total':len(results),'score':sum(r['score'] for r in results),'max_score':2*len(results)}
     (home/'report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(f"{report['passed']}/{report['total']} SCORE {report['score']:.6f}/{report['max_score']}")
@@ -121,8 +124,8 @@ def analyze(args):
     if args.jar:
         command=[args.java,'-Djava.library.path='+str(args.jar.resolve().parent/'smt-native'),
                  '-jar',str(args.jar.resolve()),'-a',
-                 'pku-se' if case['profile'].startswith('b') else 'pku-course',
-                 '--output',str(output),'-cp',str(inputs/'classes'),'-m',case['launch_entry']]
+                 'pku-se=task:'+case['profile'] if case['profile'].startswith('b') else 'pku-course',
+                 '--output',str(output),'-cp',str(inputs/'classes'),'--input-classes' if case['profile'].startswith('b') else '-m',case['entry']]
     else:
         values={'input':str(source),'prepared':str(inputs),'output':str(output),'classpath':str(inputs/'classes'),
                 'entry':case['entry'],'profile':case['profile'],'task':case['profile'],'python':sys.executable}
