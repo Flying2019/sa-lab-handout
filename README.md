@@ -78,8 +78,6 @@ python3 grader/grade_submission.py --submission handout --cases handout/tests --
 make package
 ```
 
-也可运行 `python script/package.py`。自定义文件名使用 `make package PACKAGE=../学号.tar.gz`。
-
 评测时会先运行一次 `./run_build.sh`。构建成功后针对每个测试用例分别运行 `./run_test.sh <input.java> <output>`。下发的模板项目中，默认构建脚本执行 `make build`。
 
 评测环境通过输入文件父目录名指定作业编号。你可以根据该信息决定实现方式。

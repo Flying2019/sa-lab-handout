@@ -160,7 +160,20 @@ def grade(args):
     if not dockerfile.is_file() or not all((submission/name).is_file() for name in ('run_build.sh','run_test.sh')):
         raise ValueError('Dockerfile, run_build.sh and run_test.sh are required')
     items=runner.cases(args.cases,args.profile)
+    if args.output.is_symlink(): raise ValueError('linked report directory')
     home=args.output.resolve()
+    if (home == submission or home in submission.parents or home.is_relative_to(submission)
+            or home == ROOT.parent or home in ROOT.parent.parents
+            or home == ROOT or home in dockerfile.parents
+            or any(home.is_relative_to(ROOT/name) for name in ('script','benchmark','hidden'))):
+        raise ValueError('report directory overlaps project inputs')
+    for item in items:
+        if any(source.resolve().is_relative_to(home) for source in item[2]):
+            raise ValueError('report directory contains test inputs')
+    if home.is_symlink(): raise ValueError('linked report directory')
+    if home.exists():
+        if home.is_dir(): shutil.rmtree(home)
+        else: home.unlink()
     home.mkdir(parents=True,exist_ok=False)
     image='sa-submission:'+uuid.uuid4().hex
     snapshot='sa-built:'+uuid.uuid4().hex
@@ -203,9 +216,9 @@ def main():
     mode.add_argument('--evaluate',type=Path,help=argparse.SUPPRESS)
     parser.add_argument('--actual',type=Path,help=argparse.SUPPRESS)
     parser.add_argument('--dockerfile',type=Path,default=ROOT.parent/'Dockerfile')
-    parser.add_argument('--cases',type=Path,default=ROOT/'hidden')
+    parser.add_argument('--cases',type=Path,default=ROOT.parent/'handout/tests')
     parser.add_argument('--profile',choices=['all',*runner.PROFILES],default='all')
-    parser.add_argument('--output',type=Path,required=True,help='new report directory')
+    parser.add_argument('--output',type=Path,required=True,help='report directory; existing contents are replaced')
     parser.add_argument('--docker',default='docker')
     parser.add_argument('--java',default='java',help='Java command inside the grading container')
     parser.add_argument('--javac',default='javac',help='javac command inside the grading container')
