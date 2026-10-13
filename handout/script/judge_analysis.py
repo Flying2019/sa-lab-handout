@@ -57,7 +57,7 @@ def score(actual, expected, case, **unused):
                 reference = point_set(expected[key], case)
                 if not reference <= value: return 1.0
                 precision.append((len(reference)+1)/(len(value)+1))
-        return 1.0 + sum(precision)/len(precision)
+        return 1.0 + min(precision)
     except (ValueError, TypeError, KeyError, ZeroDivisionError):
         return 1.0
 
