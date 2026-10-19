@@ -12,7 +12,6 @@ __pycache__/
 bin/
 .vscode/
 output/
-/handout/tests/a2/
 /handout/tests/a3/
 /handout/tests/a4/
 /handout/tests/a5/
