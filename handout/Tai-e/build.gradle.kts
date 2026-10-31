@@ -86,7 +86,7 @@ val pku = sourceSets.create("pku") {
 
 val syncPkuTests = tasks.register<Copy>("syncPkuTests") {
     from("../tests") { include("**/*.java") }
-    from("../benchmark") { include("internal/Benchmark.java"); into("benchmark") }
+    from("../benchmark") { include("**/*.java"); into("benchmark") }
     into("src/test/pku")
 }
 
