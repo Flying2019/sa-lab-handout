@@ -87,9 +87,7 @@ def prepare(item, dest, javac, java='java'):
     source, classes = dest/'src', dest/'classes'
     source.mkdir(); classes.mkdir()
     for file in files: shutil.copy2(file, source/file.name)
-    sdk = source/'benchmark/internal/Benchmark.java'
-    sdk.parent.mkdir(parents=True)
-    shutil.copy2(ROOT/'benchmark/internal/Benchmark.java', sdk)
+    shutil.copytree(ROOT/'benchmark', source/'benchmark')
     if case['profile'].startswith('b'):
         shutil.copy2(ROOT/'script/CourseReplay.java', source/'CourseReplay.java')
     if case['profile'].startswith('b'):

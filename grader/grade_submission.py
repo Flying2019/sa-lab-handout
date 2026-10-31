@@ -16,6 +16,10 @@ CACHES = {'.git', '.work', '.gradle', 'build', '__pycache__', '.venv',
 LIMIT = 2_000_000
 
 
+def below(path, parent):
+    return path == parent or parent in path.parents
+
+
 def control(docker, arguments, timeout=15):
     return subprocess.run([docker, *arguments], capture_output=True, text=True,
                           timeout=timeout, check=False)
@@ -109,9 +113,9 @@ def container_job(docker, image, command, timeout, log, uploads=(), env=(),
             raise RuntimeError('Could not remove grading container '+name+': '+removed.stderr)
 
 
-def build_project(docker,image,snapshot,timeout,log,network='default'):
+def build_project(docker,image,snapshot,timeout,log,network='default',env=()):
     return container_job(docker,image,['./run_build.sh'],timeout,log,snapshot=snapshot,
-                         network='bridge' if network=='default' else network)
+                         network='bridge' if network=='default' else network,env=env)
 
 
 def run_container(docker,image,source,output_dir,case,timeout,log):
@@ -162,13 +166,13 @@ def grade(args):
     items=runner.cases(args.cases,args.profile)
     if args.output.is_symlink(): raise ValueError('linked report directory')
     home=args.output.resolve()
-    if (home == submission or home in submission.parents or home.is_relative_to(submission)
+    if (home == submission or home in submission.parents or below(home,submission)
             or home == ROOT.parent or home in ROOT.parent.parents
             or home == ROOT or home in dockerfile.parents
-            or any(home.is_relative_to(ROOT/name) for name in ('script','benchmark','hidden'))):
+            or any(below(home,ROOT/name) for name in ('script','benchmark','hidden'))):
         raise ValueError('report directory overlaps project inputs')
     for item in items:
-        if any(source.resolve().is_relative_to(home) for source in item[2]):
+        if any(below(source.resolve(),home) for source in item[2]):
             raise ValueError('report directory contains test inputs')
     if home.is_symlink(): raise ValueError('linked report directory')
     if home.exists():
@@ -183,10 +187,11 @@ def grade(args):
             temporary=Path(directory)
             context=temporary/'context'
             copy_context(submission,dockerfile,context)
-            built=runner.run([args.docker,'build','--network',args.build_network,
-                              '--tag',image,str(context)],ROOT,home/'image.log',args.build_timeout)
+            command=[args.docker,'build','--network',args.build_network]
+            for value in args.build_arg: command.extend(['--build-arg',value])
+            built=runner.run([*command,'--tag',image,str(context)],ROOT,home/'image.log',args.build_timeout)
             if built['status']=='ok':
-                built=build_project(args.docker,image,snapshot,args.build_timeout,home/'build.log',args.build_network)
+                built=build_project(args.docker,image,snapshot,args.build_timeout,home/'build.log',args.build_network,args.build_env)
             for item in items:
                 _,case,_,_,_=item
                 dest=home/case['id'];dest.mkdir()
@@ -197,7 +202,7 @@ def grade(args):
                     execution=run_container(args.docker,snapshot,item[2][0],output,case,
                                             args.timeout,dest/'container.log')
                     if execution['status']=='ok':
-                        score=score_container(args,image,item,output/'result.txt',dest,temporary)
+                        score=score_container(args,args.judge_image or image,item,output/'result.txt',dest,temporary)
                 records.append({'case':case['id'],'score':score,'max_score':2,
                                 'status':execution['status']})
                 print(f'{case["id"]}: {score:.6f}/2',flush=True)
@@ -220,6 +225,9 @@ def main():
     parser.add_argument('--profile',choices=['all',*runner.PROFILES],default='all')
     parser.add_argument('--output',type=Path,required=True,help='report directory; existing contents are replaced')
     parser.add_argument('--docker',default='docker')
+    parser.add_argument('--judge-image',help='separate trusted image used only to compile tests and judge outputs')
+    parser.add_argument('--build-arg',action='append',default=[],help='Docker build argument, e.g. a build-only proxy')
+    parser.add_argument('--build-env',action='append',default=[],help='environment passed only to run_build.sh')
     parser.add_argument('--java',default='java',help='Java command inside the grading container')
     parser.add_argument('--javac',default='javac',help='javac command inside the grading container')
     parser.add_argument('--build-network',default='default',help='Docker network for image and project builds')
