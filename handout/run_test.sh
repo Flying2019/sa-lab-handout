@@ -23,11 +23,6 @@ trap 'cd "$root"; case "$work" in "$root"/.work/run.*) rm -rf "$work";; esac' 0
 mkdir -p "$work/$package_dir"
 cp "$input" "$work/$package_dir/$name.java"
 cp -R "$root/benchmark" "$work/benchmark"
-case "$name" in
-    *1Object) SA_CONTEXT=${SA_CONTEXT:-1-object};;
-    *1Call) SA_CONTEXT=${SA_CONTEXT:-1-call};;
-esac
-export SA_CONTEXT
 cd "$work"
 case "$profile" in
     b1|b2|b3)

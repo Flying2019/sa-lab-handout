@@ -71,7 +71,7 @@ def judge(args):
                           'profile':case['profile'],'python':sys.executable}
                 command = [values[t[1:-1]] if t.startswith('{') and t.endswith('}') else t for t in args.command]
             env={'SA_INPUT':str(inputs),'SA_TASK':case['profile'],
-                 'SA_PROFILE':case['profile'],'SA_CONTEXT':case.get('context','')}
+                 'SA_PROFILE':case['profile']}
             saved={key:os.environ.get(key) for key in env}
             try:
                 os.environ.update(env)
@@ -119,8 +119,7 @@ def analyze(args):
     output.parent.mkdir(parents=True,exist_ok=True)
     output.unlink(missing_ok=True)
     os.environ.update(SA_INPUT=str(inputs),
-                      SA_PROFILE=case['profile'],SA_TASK=case['profile'],
-                      SA_CONTEXT=case.get('context',''))
+                      SA_PROFILE=case['profile'],SA_TASK=case['profile'])
     if args.jar:
         command=[args.java,'-Djava.library.path='+str(args.jar.resolve().parent/'smt-native'),
                  '-jar',str(args.jar.resolve()),'-a',

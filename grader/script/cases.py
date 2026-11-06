@@ -49,9 +49,6 @@ def source_case(path, profile=None):
     case = {'id':profile+'-'+path.stem, 'task':profile, 'profile':profile, 'entry':entry,
             'entry_method':entry_method, 'parameters':parameters, 'launch_entry':entry if profile.startswith('a') else 'PkuEntry',
             'queries':queries, 'allocations':allocations}
-    if profile=='a4':
-        case['context'] = '1-call' if path.stem.endswith('1Call') else '1-object' if path.stem.endswith('1Object') else None
-        if not case['context']: raise ValueError('ERROR')
     for location in locations.values(): location['file']=path.name
     return path.parent, case, [path], locations, {}
 

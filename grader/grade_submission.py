@@ -122,7 +122,7 @@ def run_container(docker,image,source,output_dir,case,timeout,log):
     target='/input/'+source.name
     return container_job(docker,image,['./run_test.sh',target,'/output/result.txt'],timeout,log,
         uploads=[(source.resolve(),target)],
-        env=['SA_PROFILE='+case['profile'],'SA_CONTEXT='+case.get('context','')],
+        env=['SA_PROFILE='+case['profile']],
         output=('/output/result.txt',output_dir/'result.txt'))
 
 
