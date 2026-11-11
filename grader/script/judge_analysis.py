@@ -52,7 +52,7 @@ def validate_expected(rows, case):
         else: point_bounds(value, case)
 
 
-def score(actual, expected, case, **unused):
+def ordinary_score(actual, expected, case, **unused):
     """Normal execution is one point; missing/invalid answers lose the bonus."""
     try:
         validate_expected(expected, case)
@@ -71,3 +71,21 @@ def score(actual, expected, case, **unused):
 
 def check(actual, expected, case, **kwargs):
     return score(actual, expected, case, **kwargs) == 2.0
+
+
+def score(actual, expected, case, **kwargs):
+    value = ordinary_score(actual, expected, case, **kwargs)
+    return 0.0 if case.get("bonus") and value != 2.0 else value
+
+
+def summarize(results, cases):
+    regular_max = 2 * sum(not case.get('bonus') for case in cases)
+    bonus_max = 2 * sum(bool(case.get('bonus')) for case in cases)
+    regular = sum(row['score'] for row in results if not row.get('bonus'))
+    bonus = sum(row['score'] for row in results if row.get('bonus'))
+    return {'score':regular + 1.5 * bonus,
+            'max_score':regular_max, 'total_max_score':regular_max+1.5 * bonus_max,
+            'regular_score':regular, 'bonus_score':bonus,
+            'bonus_lab_score':bonus / 2,
+            'regular_max_score':regular_max, 'bonus_max_score':bonus_max,
+            'results':results}

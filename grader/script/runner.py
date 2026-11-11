@@ -28,13 +28,14 @@ def cases(root, task='all'):
 
 def assess_output(execution, output, item, inputs, home, java):
     if execution['status'] != 'ok': return 0.0
+    failure = 0.0 if item[1].get('bonus') else 1.0
     try:
         output = Path(output)
         if output.is_symlink() or not output.is_file() or output.stat().st_size > 2_000_000:
-            return 1.0
+            return failure
         rows = parse_output(output.read_text(encoding='utf-8'))
         _, case, _, _, expected = item
         return case_io.checker(case['profile']).score(rows, expected, case,
                                 input_root=inputs, home=home, java=java)
     except (OSError, ValueError, KeyError):
-        return 1.0
+        return failure

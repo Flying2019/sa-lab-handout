@@ -138,15 +138,16 @@ def evaluate(source, actual, output, java, javac):
 
 def score_container(args, image, item, output, dest, temporary):
     source=item[2][0]
-    folder=temporary/item[1]['id']/item[1]['profile']
+    case_path=('bonus/' if item[1].get('bonus') else '')+item[1]['profile']
+    folder=temporary/item[1]['id']/case_path
     folder.mkdir(parents=True)
     shutil.copy2(source,folder/source.name)
     shutil.copy2(source.with_suffix('.out'),folder/source.with_suffix('.out').name)
-    uploads=[(folder,'/cases/'+item[1]['profile'])]
+    uploads=[(folder.parent,'/cases/bonus')] if item[1].get('bonus') else [(folder,'/cases/'+case_path)]
     if output.is_file(): uploads.append((output,'/output/result.txt'))
     result=container_job(args.docker,image,
         ['-c','exec python3 /workspace/grader/grade_submission.py "$@"','judge',
-         '--evaluate','/cases/'+item[1]['profile']+'/'+source.name,
+         '--evaluate','/cases/'+case_path+'/'+source.name,
          '--actual','/output/result.txt','--output','/evaluation',
          '--java',args.java,'--javac',args.javac],
         90+20*len(item[1]['queries']),dest/'judge.log',uploads=uploads,
@@ -158,12 +159,21 @@ def score_container(args, image, item, output, dest, temporary):
     return score
 
 
+def selected_cases(args):
+    items = runner.cases(args.cases, args.profile)
+    if args.include_hidden and args.profile in {'a5', 'all'}:
+        items += runner.cases(ROOT/'hidden', 'a5')
+    unique = {item[1]['id']:item for item in items}
+    return sorted(unique.values(), key=lambda item:(item[1]['profile'], bool(item[1].get('bonus')),
+                                                     not item[1].get('forward_only',False), item[1]['id']))
+
+
 def grade(args):
     submission=args.submission.resolve()
     dockerfile=args.dockerfile.resolve()
     if not dockerfile.is_file() or not all((submission/name).is_file() for name in ('run_build.sh','run_test.sh')):
         raise ValueError('Dockerfile, run_build.sh and run_test.sh are required')
-    items=runner.cases(args.cases,args.profile)
+    items=selected_cases(args)
     if args.output.is_symlink(): raise ValueError('linked report directory')
     home=args.output.resolve()
     if (home == submission or home in submission.parents or below(home,submission)
@@ -204,12 +214,12 @@ def grade(args):
                     if execution['status']=='ok':
                         score=score_container(args,args.judge_image or image,item,output/'result.txt',dest,temporary)
                 records.append({'case':case['id'],'score':score,'max_score':2,
-                                'status':execution['status']})
+                                'status':execution['status'],'bonus':case.get('bonus',False)})
                 print(f'{case["id"]}: {score:.6f}/2',flush=True)
-                report={'score':sum(r['score'] for r in records),'max_score':2*len(items),'results':records}
+                report=runner.case_io.judge_analysis.summarize(records, [item[1] for item in items])
                 (home/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
             print(f'SCORE {report["score"]:.6f}/{report["max_score"]}',flush=True)
-            return 0 if report['score']==report['max_score'] else 1
+            return 0 if report['score']==report['total_max_score'] else 1
     finally:
         control(args.docker,['image','rm','--force',snapshot,image],timeout=30)
 
@@ -222,6 +232,7 @@ def main():
     parser.add_argument('--actual',type=Path,help=argparse.SUPPRESS)
     parser.add_argument('--dockerfile',type=Path,default=ROOT.parent/'Dockerfile')
     parser.add_argument('--cases',type=Path,default=ROOT.parent/'handout/tests')
+    parser.add_argument('--include-hidden',action='store_true',help='include the instructor A5 regular and bonus cases')
     parser.add_argument('--profile',choices=['all',*runner.PROFILES],default='all')
     parser.add_argument('--output',type=Path,required=True,help='report directory; existing contents are replaced')
     parser.add_argument('--docker',default='docker')

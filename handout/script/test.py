@@ -86,9 +86,10 @@ def judge(args):
             if passed: status = 'pass'
         except (OSError, ValueError, KeyError):
             pass
-        results.append({'case':case['id'],'status':status,'score':points,'max_score':2})
+        results.append({'case':case['id'],'status':status,'score':points,'max_score':2,'bonus':case.get('bonus',False)})
         print(status.upper(),case['id'],f'{points:.6f}/2',flush=True)
-    report={'results':results,'passed':sum(r['status']=='pass' for r in results),'total':len(results),'score':sum(r['score'] for r in results),'max_score':2*len(results)}
+    report=case_io.judge_analysis.summarize(results, [item[1] for item in cases(args.cases,args.task)])
+    report.update(passed=sum(r['status']=='pass' for r in results), total=len(results))
     (home/'report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(f"{report['passed']}/{report['total']} SCORE {report['score']:.6f}/{report['max_score']}")
     return int(report['passed']!=report['total'])
@@ -96,16 +97,17 @@ def judge(args):
 
 def assess_output(execution, output, item, inputs, home, java):
     if execution['status'] != 'ok': return 0.0
+    failure = 0.0 if item[1].get('bonus') else 1.0
     try:
         output=Path(output)
         if output.is_symlink() or not output.is_file() or output.stat().st_size>2_000_000:
-            return 1.0
+            return failure
         rows=parse_output(output.read_text(encoding='utf-8'))
         _,case,_,_,expected=item
         return case_io.checker(case['profile']).score(rows,expected,case,
                                 input_root=inputs,home=home,java=java)
     except (OSError,ValueError,KeyError):
-        return 1.0
+        return failure
 
 
 def analyze(args):

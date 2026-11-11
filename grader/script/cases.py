@@ -10,6 +10,7 @@ from . import judge_analysis, judge_symbolic
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILES = ('a1','a2','a3','a4','a5','b1','b2','b3')
+FORWARD_CASES = {'BranchPointer','BranchNegative','ResultSlots','MultiArray','BufferSnapshot'}
 
 
 def checker(profile):
@@ -48,7 +49,9 @@ def source_case(path, profile=None):
     if profile in {'a3','a4'} and set(queries.values()) != {'points'}: raise ValueError('ERROR')
     case = {'id':profile+'-'+path.stem, 'task':profile, 'profile':profile, 'entry':entry,
             'entry_method':entry_method, 'parameters':parameters, 'launch_entry':entry if profile.startswith('a') else 'PkuEntry',
-            'queries':queries, 'allocations':allocations}
+            'queries':queries, 'allocations':allocations,
+            'bonus':profile=='a5' and path.parent.parent.name=='bonus',
+            'forward_only':profile=='a5' and (path.stem in FORWARD_CASES or path.parent.parent.name=='foundation')}
     for location in locations.values(): location['file']=path.name
     return path.parent, case, [path], locations, {}
 
@@ -67,7 +70,8 @@ def cases(root, profile, parse):
     files = [root] if root.is_file() else sorted(root.rglob('*.java'))
     items = [load_case(p,parse) for p in files if profile=='all' or p.parent.name==profile]
     if not items or len({i[1]['id'] for i in items})!=len(items): raise ValueError('ERROR')
-    return items
+    return sorted(items, key=lambda item:(item[1]["profile"], bool(item[1].get("bonus")),
+                                            not item[1].get("forward_only",False), item[1]["id"]))
 
 
 def prepare(item, dest, javac, java='java'):
